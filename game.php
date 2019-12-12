@@ -1,22 +1,18 @@
 <?php
 declare(strict_types=1);
 include 'Blackjack.php';
-
+include 'winnerLogic.php';
 session_start();
+
 if (empty($_SESSION['player']) && empty($_SESSION['dealer'])) {
     $_SESSION['player'] = new Player();
     $_SESSION['dealer'] = new Dealer();
 }
-$dealer = $_SESSION['dealer'];
-$player = $_SESSION['player'];
 
 $dealer = $_SESSION['dealer'];
 $player = $_SESSION['player'];
-
-
 //////////////////////////////////////////////
 //GAME LOGIC//
-//DEALS NEW CARDS, SHOULD ONLY BE ACTIVE IF NO GAME IS CURRENTLY RUNNING 
 if (isset($_POST['start'])){
     $dealer->reset();
     $player->reset();
@@ -24,27 +20,29 @@ if (isset($_POST['start'])){
 
 //PLAYER CHOICES, SHOULD ONLY BE ACTIVE IF A GAME IS CURRENTLY RUNNING
 if (isset($_POST['hit'])) {
-    echo "Hit pressed";
+    // echo "Hit pressed";
     $player -> hit();
     if($player->score >= 21){
         $dealer -> dealerTurn($player);
+       winnerLogic($player,$dealer); 
     }
 }
 
 if (isset($_POST['stand'])) {
-    echo "Stand pressed";
+    // echo "Stand pressed";
     $player -> stand();
     $dealer -> dealerTurn($player);
+       winnerLogic($player,$dealer); 
 }
 
 if (isset($_POST['surrender'])) {
-    echo "Surrender pressed";
+    // echo "Surrender pressed";
     $player -> surrender();
     $dealer -> dealerTurn($player);
+       winnerLogic($player,$dealer); 
 }
 
 //DISABLES CONTROLS
-var_dump($player->score);
 $disabled = $player->lost == true ? "disabled='disabled'" : "";
 
 ?>
@@ -66,12 +64,25 @@ $disabled = $player->lost == true ? "disabled='disabled'" : "";
     </div>
   <div class="container">  
       <div class="d-flex justify-content-center">
-            <div>
-                <h2>Player</h2>
+            <div class="card">
+                <h2 class="card-header">Player</h2>
+                <div class="card-body">
+                    <label>Hand </label>
+                    <p><?php echo $player->score ?></p>
+                    <label>Wins</label>
+                    <p><?php echo $player->wins ?></p>
+</div>
             </div>
-            <div>
-                <h2>Dealer</h2>
+            <div class="card">
+                <h2 class="card-header">Dealer</h2>
+                <div class="card-body">
+                    <label>Hand </label>
+                    <p><?php echo $dealer->score ?></p>
+                    <label>Wins</label>
+                    <p><?php echo $dealer->wins ?></p>
+                </div>
             </div>
+            
       </div>
     <form class="d-flex justify-content-center" method="POST">
         <fieldset>
@@ -95,11 +106,11 @@ $disabled = $player->lost == true ? "disabled='disabled'" : "";
 
 <?php
 
-echo '<h2>$_GET</h2>';
-var_dump($_GET);
-echo '<h2>$_POST</h2>';
-var_dump($_POST);
-echo '<h2>$_SESSION</h2>';
-var_dump($_SESSION);
+// echo '<h2>$_GET</h2>';
+// var_dump($_GET);
+// echo '<h2>$_POST</h2>';
+// var_dump($_POST);
+// echo '<h2>$_SESSION</h2>';
+// var_dump($_SESSION);
 
 ?>

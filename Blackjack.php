@@ -50,8 +50,8 @@ class Dealer extends BlackJack
         } while ($this->score < 15);
         while (($this->score >= 15 && $this->score < 21) && $this->halt == false ) {
             $randomChoice = rand(1, 10);
-            var_dump($randomChoice);
-            var_dump($this->halt);
+            // var_dump($randomChoice);
+            // var_dump($this->halt);
             if ($randomChoice > 5) {
                 $this->hit();
             } else {
