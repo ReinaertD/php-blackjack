@@ -5,18 +5,62 @@ class Blackjack
     {
         $this->score = 0;
         $this->wins = 0;
+        $this->lost = false;
+        $this->surrendered = false;
+        $this->halt = false;
     }
     function hit()
     {
         $card = new Card();
-        $this->score += $card->cardNumber;
+        if ($card->cardNumber + $this->score <= 21) {
+            $this->score += $card->cardNumber;
+        } else {
+            $this->lost = true;
+            $this->score += $card->cardNumber;
+        }
     }
-    function stand()
-    { }
+    function stand(){
+        $this->halt = true;
+     }
     function surrender()
-    { }
+    {
+        $this->lost = true;
+        $this->surrendered = true;
+    }
+    function reset()
+    {
+        $this->score = 0;
+        $this->lost = false;
+        $this->surrendered = false;
+        $this->halt=false;
+    }
 }
 
+
+class Player extends BlackJack
+{ }
+
+class Dealer extends BlackJack
+{
+    function dealerTurn($opponent)
+    {
+        //DEALER BEHAVIOUR
+        do {
+            $this->hit();
+        } while ($this->score < 15);
+        while (($this->score >= 15 && $this->score < 21) && $this->halt == false ) {
+            $randomChoice = rand(1, 10);
+            var_dump($randomChoice);
+            var_dump($this->halt);
+            if ($randomChoice > 5) {
+                $this->hit();
+            } else {
+                $this->halt = true;
+            }
+        }
+
+    }
+}
 
 class Card
 {
@@ -26,33 +70,8 @@ class Card
     }
 }
 
-//////////////////////////////////////////////
-//GAME LOGIC//
-session_start();
-if (empty($_SESSION['player']) && empty($_SESSION['dealer'])) {
-    $_SESSION['player'] = new Blackjack();
-    $_SESSION['dealer'] = new Blackjack();
-}
 
 
-//PLAYER CHOICES, SHOULD ONLY BE ACTIVE IF A GAME IS CURRENTLY RUNNING
-if (isset($_POST['hit'])) {
-    echo "Hit pressed";
-    $_SESSION['player']-> wins++;
-}
-
-if (isset($_POST['stand'])) {
-    echo "Stand pressed";
-}
-
-if (isset($_POST['surrender'])) {
-    echo "Surrender pressed";
-}
-
-//DEALS NEW CARDS, SHOULD ONLY BE ACTIVE IF NO GAME IS CURRENTLY RUNNING 
-if (isset($_POST['start'])) {
-    echo "Deal pressed";
-}
 //////////////////////////////////////////////
 /*
 1.Game starts

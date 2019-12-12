@@ -2,6 +2,50 @@
 declare(strict_types=1);
 include 'Blackjack.php';
 
+session_start();
+if (empty($_SESSION['player']) && empty($_SESSION['dealer'])) {
+    $_SESSION['player'] = new Player();
+    $_SESSION['dealer'] = new Dealer();
+}
+$dealer = $_SESSION['dealer'];
+$player = $_SESSION['player'];
+
+$dealer = $_SESSION['dealer'];
+$player = $_SESSION['player'];
+
+
+//////////////////////////////////////////////
+//GAME LOGIC//
+//DEALS NEW CARDS, SHOULD ONLY BE ACTIVE IF NO GAME IS CURRENTLY RUNNING 
+if (isset($_POST['start'])){
+    $dealer->reset();
+    $player->reset();
+}
+
+//PLAYER CHOICES, SHOULD ONLY BE ACTIVE IF A GAME IS CURRENTLY RUNNING
+if (isset($_POST['hit'])) {
+    echo "Hit pressed";
+    $player -> hit();
+    if($player->score >= 21){
+        $dealer -> dealerTurn($player);
+    }
+}
+
+if (isset($_POST['stand'])) {
+    echo "Stand pressed";
+    $player -> stand();
+    $dealer -> dealerTurn($player);
+}
+
+if (isset($_POST['surrender'])) {
+    echo "Surrender pressed";
+    $player -> surrender();
+    $dealer -> dealerTurn($player);
+}
+
+//DISABLES CONTROLS
+var_dump($player->score);
+$disabled = $player->lost == true ? "disabled='disabled'" : "";
 
 ?>
 
@@ -31,9 +75,9 @@ include 'Blackjack.php';
       </div>
     <form class="d-flex justify-content-center" method="POST">
         <fieldset>
-            <button name="hit">Hit</button>
-            <button name="stand">Stand</button>
-            <button name="surrender">Surrender</button>
+            <button name="hit" <?php echo $disabled; ?>>Hit</button>
+            <button name="stand"<?php echo $disabled; ?>>Stand</button>
+            <button name="surrender"<?php echo $disabled; ?>>Surrender</button>
         </fieldset>
 </form>
 </div>
@@ -47,11 +91,15 @@ include 'Blackjack.php';
 </body>
 
 </html>
+
+
 <?php
-    echo '<h2>$_GET</h2>';
-    var_dump($_GET);
-    echo '<h2>$_POST</h2>';
-    var_dump($_POST);
-    echo '<h2>$_SESSION</h2>';
-    var_dump($_SESSION)
+
+echo '<h2>$_GET</h2>';
+var_dump($_GET);
+echo '<h2>$_POST</h2>';
+var_dump($_POST);
+echo '<h2>$_SESSION</h2>';
+var_dump($_SESSION);
+
 ?>
