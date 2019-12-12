@@ -43,7 +43,7 @@ if (isset($_POST['surrender'])) {
 }
 
 //DISABLES CONTROLS
-$disabled = $player->lost == true ? "disabled='disabled'" : "";
+$disabled = $player->lost == true || $player->halt == true || $player->surrendered == true ? "disabled='disabled'" : "";
 
 ?>
 
