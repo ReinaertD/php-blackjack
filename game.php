@@ -4,18 +4,24 @@ include 'Blackjack.php';
 include 'winnerLogic.php';
 session_start();
 
-if (empty($_SESSION['player']) && empty($_SESSION['dealer'])) {
+if (empty($_SESSION['player']) && empty($_SESSION['dealer']) || empty($_SESSION['carddeck'])) {
     $_SESSION['player'] = new Player();
     $_SESSION['dealer'] = new Dealer();
+    $_SESSION['carddeck'] = new Carddeck();
 }
-
+$carddeck = $_SESSION['carddeck'];
 $dealer = $_SESSION['dealer'];
 $player = $_SESSION['player'];
+
+var_dump($carddeck);
+// var_dump($player->pickCard($carddeck));
+var_dump($_SESSION);
 //////////////////////////////////////////////
 //GAME LOGIC//
 if (isset($_POST['start'])){
     $dealer->reset();
     $player->reset();
+    unset ($_SESSION['carddeck']);
 }
 
 //PLAYER CHOICES, SHOULD ONLY BE ACTIVE IF A GAME IS CURRENTLY RUNNING
@@ -33,6 +39,7 @@ if (isset($_POST['stand'])) {
     $player -> stand();
     $dealer -> dealerTurn($player);
        winnerLogic($player,$dealer); 
+    
 }
 
 if (isset($_POST['surrender'])) {

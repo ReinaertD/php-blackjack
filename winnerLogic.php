@@ -28,4 +28,5 @@ function winnerLogic($player,$dealer){
     } else {
         echo "ERROR IN WINNERLOGIC";
     }
+    
 }
